@@ -7,7 +7,7 @@
 
 [English](README.en.md)
 
-> CSVを渡すだけで、5チャネルの広告戦略立案・クリエイティブ生成・データ分析・改善提案を自律実行する Claude Code スキル。GAFA公式推奨に準拠。
+> CSVを渡すだけで、5チャネルの広告戦略立案・クリエイティブ生成・データ分析・改善提案を自律実行する Claude Code スキル。各プラットフォーム公式ガイドラインに準拠。
 
 ---
 
@@ -16,7 +16,7 @@
 | | 手動運用 | 他AIツール (AdCreative.ai等) | pm-ad-analysis |
 |---|---|---|---|
 | 対応チャネル | 1つずつ個別 | Meta/Google中心 | **5チャネル統合** |
-| 計測基盤構築 | 自力でドキュメント解読 | 対象外 | **GAFA準拠オンボーディング** |
+| 計測基盤構築 | 自力でドキュメント解読 | 対象外 | **公式ガイドライン準拠オンボーディング** |
 | 予算配分 | 直感ベース | ROAS平均比較 | **限界ROIベースMMM** |
 | 因果検証 | なし | なし | **インクリメンタリティテスト設計** |
 | 信頼性 | 属人的 | ブラックボックス | **Confidence Scoring (12pt)** |
@@ -77,6 +77,22 @@ pip install pandas scipy statsmodels numpy matplotlib seaborn
 | 9 | **Incrementality** | 因果検証テスト設計 (Geo-holdout等) | `「インクリメンタリティテスト」` |
 | 10 | **Attribution** | モデル選択 + 移行計画 | `「アトリビューション選択」` |
 
+### ユースケース別ガイド
+
+| やりたいこと | Capability | コマンド例 |
+|---|---|---|
+| 初めて広告を始める | 0: Platform Onboarding | 新規プロジェクトで自動起動 |
+| 広告戦略を立て直したい | 1: Strategic Hearing | `「広告戦略を立てたい」` |
+| 検索クエリの無駄を減らしたい | 2: N-gram Analysis | `「N-gram分析して」` |
+| 広告文を大量に作りたい | 3: Creative Generation | `「見出し生成して」` |
+| 広告が疲弊していないか確認 | 4: Fatigue Detection | CTR低下時に自動検知 |
+| トラッキングリンクを整備 | 5: MMP/UTM Links | `「トラッキングリンク作って」` |
+| Apple Search Ads を最適化 | 6: Apple Search Ads | `「ASAキャンペーン設計」` |
+| TikTok 広告のフック改善 | 7: TikTok Ads | `「TikTok広告のフック分析」` |
+| 予算配分を最適化したい | 8: MMM Portfolio | `「MMM予算配分」` |
+| 広告の因果効果を検証したい | 9: Incrementality | `「インクリメンタリティテスト」` |
+| アトリビューションモデル選定 | 10: Attribution | `「アトリビューション選択」` |
+
 ---
 
 ## Channel Coverage
@@ -117,6 +133,8 @@ pm-ad-analysis (Strategy Orchestrator)
         |-- pm-acquisition-channel-advisor (Channel economics)
         +-- funnel-analysis          (Post-click funnel)
 ```
+
+> 委譲先スキルは全て同一 Claude Code 環境にインストールされたスキルです。別途リポジトリのインストールは不要です（Claude Code のスキルとして定義済み）。
 
 ---
 
@@ -173,7 +191,7 @@ pm-ad-analysis (Strategy Orchestrator)
 | 1 | my_pm_tools | GitHub Projects V2 管理 | [fideguch/my_pm_tools](https://github.com/fideguch/my_pm_tools) |
 | 2 | requirements_designer | 要件定義 + Figma連携 | [fideguch/requirements_designer](https://github.com/fideguch/requirements_designer) |
 | 3 | speckit-bridge | 要件 → 仕様変換 | [fideguch/speckit-bridge](https://github.com/fideguch/speckit-bridge) |
-| 4 | pm-data-analysis | GAFA品質データ分析 | [fideguch/pm_data_analysis](https://github.com/fideguch/pm_data_analysis) |
+| 4 | pm-data-analysis | プロダクション品質データ分析 | [fideguch/pm_data_analysis](https://github.com/fideguch/pm_data_analysis) |
 | 5 | **pm-ad-analysis** | **全自動広告運用** | **this repo** |
 
 ```

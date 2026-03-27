@@ -7,7 +7,7 @@
 
 [Japanese / 日本語](README.md)
 
-> A Claude Code skill that autonomously executes 5-channel ad strategy, creative generation, data analysis, and optimization — just hand it a CSV. Built on GAFA official best practices.
+> A Claude Code skill that autonomously executes 5-channel ad strategy, creative generation, data analysis, and optimization — just hand it a CSV. Built on each platform's official guidelines.
 
 ---
 
@@ -16,7 +16,7 @@
 | | Manual Ops | Other AI Tools (AdCreative.ai, etc.) | pm-ad-analysis |
 |---|---|---|---|
 | Channel Coverage | One at a time | Meta/Google-centric | **5 channels integrated** |
-| Measurement Setup | Read docs yourself | Out of scope | **GAFA-compliant onboarding** |
+| Measurement Setup | Read docs yourself | Out of scope | **Platform-guideline-compliant onboarding** |
 | Budget Allocation | Gut feeling | Average ROAS comparison | **Marginal ROI-based MMM** |
 | Causal Validation | None | None | **Incrementality test design** |
 | Reliability | Tribal knowledge | Black box | **Confidence Scoring (12pt)** |
@@ -77,6 +77,22 @@ If you already have ad accounts set up, Capability 0 is skipped and you go strai
 | 9 | **Incrementality** | Causal test design (geo-holdout, etc.) | Causal/incremental query |
 | 10 | **Attribution** | Model selection + migration plan | Attribution questions |
 
+### Use-Case Guide
+
+| What you want to do | Capability | Example command |
+|---|---|---|
+| Start advertising for the first time | 0: Platform Onboarding | Auto-launches on new projects |
+| Rebuild ad strategy | 1: Strategic Hearing | `"I want to build an ad strategy"` |
+| Reduce wasted search queries | 2: N-gram Analysis | `"Run N-gram analysis"` |
+| Generate ad copy in bulk | 3: Creative Generation | `"Generate headlines"` |
+| Check if ads are fatigued | 4: Fatigue Detection | Auto-detected on CTR decline |
+| Set up tracking links | 5: MMP/UTM Links | `"Create tracking links"` |
+| Optimize Apple Search Ads | 6: Apple Search Ads | `"Design ASA campaigns"` |
+| Improve TikTok ad hooks | 7: TikTok Ads | `"Analyze TikTok ad hooks"` |
+| Optimize budget allocation | 8: MMM Portfolio | `"MMM budget allocation"` |
+| Validate causal ad impact | 9: Incrementality | `"Incrementality test"` |
+| Select attribution model | 10: Attribution | `"Choose attribution model"` |
+
 ---
 
 ## Channel Coverage
@@ -117,6 +133,8 @@ pm-ad-analysis (Strategy Orchestrator)
         |-- pm-acquisition-channel-advisor (Channel economics)
         +-- funnel-analysis          (Post-click funnel)
 ```
+
+> Delegated skills are all installed within the same Claude Code environment. No separate repository installation is required (they are defined as Claude Code skills).
 
 ---
 
@@ -173,7 +191,7 @@ This skill is part of a 5-skill PM tool suite:
 | 1 | my_pm_tools | GitHub Projects V2 management | [fideguch/my_pm_tools](https://github.com/fideguch/my_pm_tools) |
 | 2 | requirements_designer | Requirements + Figma integration | [fideguch/requirements_designer](https://github.com/fideguch/requirements_designer) |
 | 3 | speckit-bridge | Requirements to spec conversion | [fideguch/speckit-bridge](https://github.com/fideguch/speckit-bridge) |
-| 4 | pm-data-analysis | GAFA-quality data analysis | [fideguch/pm_data_analysis](https://github.com/fideguch/pm_data_analysis) |
+| 4 | pm-data-analysis | Production-quality data analysis | [fideguch/pm_data_analysis](https://github.com/fideguch/pm_data_analysis) |
 | 5 | **pm-ad-analysis** | **Autonomous ad operations** | **this repo** |
 
 ```
