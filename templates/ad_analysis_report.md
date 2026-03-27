@@ -7,13 +7,17 @@
 
 ---
 
+## Hypothesis
+**We hypothesized**: [If we do X, then Y metric will improve by Z% because of mechanism W.]
+**Result**: [Confirmed / Partially confirmed / Rejected / Insufficient data]
+
 ## Executive Summary
 [1 sentence: Period and channels covered]
 [1 sentence: Key finding — translated to KPI impact]
 [1 sentence: Recommended action]
 Confidence: [High/Medium/Low] — [plain-language reason]
 
-Total Spend: [amount] | Conversions: [count] | Blended CPA: [amount] | ROAS: [X]
+Total Spend: [amount] | Conversions: [count] | Blended CPA: [amount] (95% CI: [lo]–[hi]) | ROAS: [X]
 
 ---
 
@@ -76,6 +80,29 @@ Total Spend: [amount] | Conversions: [count] | Blended CPA: [amount] | ROAS: [X]
 
 ---
 
+## Sensitivity Analysis
+
+| Scenario | CPM Change | CPA Impact | ROAS Impact | Conversions Impact |
+|----------|-----------|-----------|------------|-------------------|
+| Baseline | 0% | $[X] | [Y]x | [N] |
+| CPM +20% | +20% | $[X+a] | [Y-b]x | [N-c] |
+| CPM -20% | -20% | $[X-a] | [Y+b]x | [N+c] |
+| CVR +10% | — | $[X-d] | [Y+e]x | [N+f] |
+| Budget +30% | — | $[X+g] (diminishing returns) | [Y-h]x | [N+i] |
+
+## LTV / Unit Economics Translation
+
+```
+Current CPA: $[X]
+Estimated LTV: $[Y] (from pm-saas-economics or user input)
+LTV:CAC ratio: [Y/X] (target: >3.0)
+Payback period: [N] months
+Break-even CPA: $[Y / target_LTV_CAC_ratio]
+
+→ "At current CPA of $[X], each customer pays back in [N] months.
+   Maximum acceptable CPA for 3x LTV:CAC: $[break-even]."
+```
+
 ## Budget Forecast
 
 At current efficiency:
@@ -105,19 +132,42 @@ At current efficiency:
 
 ## Reproduction
 
-### Data Source
+→ Full framework: `references/reproducibility.md`
+
+### Environment
+- Python: [version]
+- pandas: [version]
+- scipy: [version] (if used)
+- Random seed: 42 (if Monte Carlo/bootstrap used)
+
+### Data Version
 - Platform: [Google Ads / Meta Ads / ASA / TikTok]
-- Export date: [date]
-- Date range: [start ~ end]
-- File: [path]
+- Export method: [CSV manual / API / MCP]
+- Export date: [YYYY-MM-DD HH:MM timezone]
+- Data date range: [start ~ end]
+- Input hash: [SHA-256 first 8 chars]
+- Row count: [N]
+
+### Config Overrides
+- [List any threshold overrides from .claude_ad_memory/config.md, or "None — defaults used"]
 
 ### Code
 ```python
+import numpy as np
+np.random.seed(42)
 import pandas as pd
 # Full analysis pipeline
 ```
 
+### Re-Run Validation
+| Metric | Original | Re-Run | Delta | Tolerance | Pass? |
+|--------|----------|--------|-------|-----------|-------|
+| Total spend | | | | exact | |
+| Total conversions | | | | exact | |
+| Blended CPA | | | | ±1% | |
+
 ### Re-run Instructions
 1. Export fresh CSV from [platform] > Reports > [report name]
-2. Run code above with new file path
-3. Compare to previous: [key metric] was [value]
+2. Verify input hash matches (or note data has changed)
+3. Run code above with new file path
+4. Complete Re-Run Validation table above

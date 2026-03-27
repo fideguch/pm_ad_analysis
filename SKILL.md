@@ -78,6 +78,8 @@ References are loaded on-demand to preserve context window:
 | `references/creative_testing.md` | Fatigue detection, rotation, A/B testing |
 | `references/attribution_models.md` | Attribution model selection, migration |
 | `references/mmm_incrementality.md` | MMM, marginal ROI, incrementality tests |
+| `references/amazon_ads_playbook.md` | Amazon Sponsored Products/Brands/Display, DSP, ACOS |
+| `references/reproducibility.md` | Environment spec, threshold config, data versioning |
 
 Do NOT pre-load all references at skill invocation.
 
@@ -117,6 +119,21 @@ Autonomous decision:
 5. Creative vault has >10 items without performance data -> prompt for performance CSV upload
 6. Budget question -> Capability 8 (portfolio-level), then delegate within-channel to pm-ad-operations
 7. New platform API docs provided -> trigger self-learning SOP generation
+8. Amazon Ads data -> Load `references/amazon_ads_playbook.md`, apply ACOS framework
+
+### Fallback Rules
+
+When a delegated skill is unavailable:
+- **pm-ad-operations missing**: Execute built-in CSV analysis (simplified): read CSV, compute CPA/ROAS/CTR per campaign, flag waste (zero-conversion with spend >10% of total). Output as table. Note: "Simplified analysis — install pm-ad-operations for full waste detection."
+- **pm-data-analysis missing**: Use built-in Python stats (scipy.stats.ttest_ind, chi2_contingency). Note: "Basic statistical testing — install pm-data-analysis for full analysis suite."
+- **Other skills missing**: Skip delegation, note in output: "[skill] not available. Manual analysis recommended for [topic]."
+
+### Meta-Routing Check
+
+Before executing, verify:
+- Is the chosen capability applicable to the platform? (e.g., N-gram only for Google Search, not P-MAX)
+- Is there a learned SOP that should override default behavior? (scan learned_sops/)
+- Has a similar analysis been done in the last 7 days? (check history_log.jsonl) → offer to compare
 
 ### Mandatory for ALL analyses
 
@@ -575,20 +592,74 @@ When switching attribution models, report expected changes:
 
 ---
 
-## Ad-Specific Guardrails (MANDATORY — auto-run before output)
+## Ad-Specific Guardrails (MANDATORY — auto-execute before ANY output)
+
+These guardrails are NOT optional checklists. Execute each check programmatically before presenting results. If a check fails, the corresponding action MUST be taken before proceeding.
+
+### Pre-Flight Execution Sequence
 
 ```
-Guardrail Checklist:
-- [ ] Learning phase: Any campaigns in learning phase? (exclude from optimization)
-- [ ] Attribution mismatch: Comparing channels with different attribution windows?
-- [ ] Currency consistency: All spend figures in same currency?
-- [ ] Seasonality: Is current period comparable to comparison period?
-- [ ] LAT/SKAdNetwork: Are iOS conversions undercounted? (flag if app campaigns)
-- [ ] Budget shift impact: Does reallocation exceed 30% of any channel's budget? (warn + require approval)
-- [ ] Creative sample size: Enough impressions per creative for significance?
+BEFORE_OUTPUT:
+  1. LEARNING_PHASE_CHECK:
+     - Scan data for campaigns with <50 conversions (Google) or "Learning" status (Meta)
+     - Action: EXCLUDE from optimization recommendations
+     - Confidence penalty: -2pt
+     - Output: "⚠ [N] campaigns excluded (learning phase)"
+
+  2. ATTRIBUTION_WINDOW_CHECK:
+     - Compare attribution windows across channels in analysis
+     - Detect: Meta 1-day click vs Google 30-day click → unfair comparison
+     - Action: NORMALIZE to shortest common window, or flag explicitly
+     - Confidence penalty: -1pt if not normalized
+     - Output: "⚠ Attribution windows differ: [list]. Normalized to [window]."
+
+  3. CURRENCY_CHECK:
+     - Verify all spend figures use same currency
+     - Action: CONVERT using stated exchange rate, or STOP and ask user
+     - Output: "Currency: [currency] (confirmed)" or "⚠ Mixed currencies detected"
+
+  4. SEASONALITY_CHECK:
+     - Compare current period to comparison period
+     - Detect: Weekday vs weekend, holiday vs normal, Q4 vs Q1
+     - Action: FLAG if periods are non-comparable
+     - Confidence penalty: -1pt if non-comparable periods used
+     - Output: "Period comparison: [comparable/non-comparable]. Reason: [X]"
+
+  5. LAT_SKAN_CHECK (if product_type == App):
+     - Estimate LAT rate from channel_context.md or default (35% US, 25% JP)
+     - Action: Report BOTH raw and LAT-adjusted conversions/CPA
+     - Confidence penalty: -1pt if LAT-adjusted figures not shown
+     - Output: "iOS LAT adjustment applied: [rate]%. Adjusted CPA: [X]"
+
+  6. BUDGET_SHIFT_CHECK (if reallocation recommended):
+     - Calculate % change per channel
+     - If any channel delta > 30%: REQUIRE explicit PM approval before presenting as recommendation
+     - Output: "⚠ Budget shift >[30]% for [channel]. Approval required (Y/N)."
+
+  7. CREATIVE_SAMPLE_CHECK (if creative comparison):
+     - Minimum impressions per creative: 1,000 (display), 500 (search)
+     - Minimum conversions per variant: 30 (for significance)
+     - Action: Flag insufficient sample, downgrade confidence
+     - Confidence penalty: -1pt per insufficient variant
+     - Output: "Sample check: [sufficient/insufficient]. [N] creatives below threshold."
+
+  8. PLATFORM_CAPABILITY_CHECK:
+     - Google P-MAX: Cannot do N-gram analysis (no search term data) → skip Capability 2
+     - Meta Advantage+: Cannot disaggregate by audience → warn in reporting
+     - Apple LAT >50%: Flag "majority of conversions unmeasured" → downgrade all ASA confidence
+     - Action: Auto-detect campaign type and skip inapplicable capabilities
+     - Output: "[N] capabilities skipped due to platform limitations: [list]"
 ```
 
-If any guardrail triggered: note in output, adjust confidence, require user acknowledgment.
+### Guardrail Violation Severity
+
+| Severity | Behavior | Example |
+|----------|---------|---------|
+| BLOCK | Cannot proceed without user action | Budget shift >30%, mixed currencies |
+| WARN | Proceed with confidence penalty + visible note | Learning phase, attribution mismatch |
+| INFO | Note in report, no confidence impact | Period comparison details |
+
+If ANY BLOCK-level guardrail triggers: present the issue and STOP. Do not output analysis until resolved.
 
 ---
 
@@ -598,17 +669,61 @@ Inherited from pm-data-analysis 4-axis/12-point rubric.
 
 → Full rubric: `references/mmm_incrementality.md` § "Confidence Scoring"
 
-**Ad-specific adjustments:**
-- **Attribution uncertainty**: -1pt if using last-click attribution for multi-touch journey
-- **Cross-channel interference**: -1pt if channels share audiences without exclusion lists
-- **Learning phase data**: -2pt if analysis includes campaigns in learning phase
-- **Platform data lag**: -1pt if using Meta 1-day click vs 28-day view attribution without noting difference
+### Base Rubric (4 axes × 3pt = 12pt max)
 
-**Total: 10-12pt = High, 7-9pt = Medium, <=6pt = Low**
+| Axis | High (3pt) | Medium (2pt) | Low (1pt) |
+|------|-----------|-------------|----------|
+| Statistical significance | p < 0.01 | p < 0.05 | p >= 0.05 or untested |
+| Effect size | ROAS > 2x target or CPA < 50% target | On target (±20%) | Below target or unknown |
+| Sample size | N >= recommended (see creative_testing.md) | N = 50-100% | N < 50% |
+| Data quality | Full attribution, no gaps, <5% missing | Partial (LAT, SKAN) 5-15% | Major gaps >15% |
+
+### Per-Capability Confidence Modifiers
+
+| Capability | Auto-Penalty | Condition |
+|-----------|-------------|-----------|
+| Cap 2 (N-gram) | -1pt | Data period < 30 days |
+| Cap 3 (Creative) | -1pt | Vault has <5 historical creatives with performance data |
+| Cap 4 (Fatigue) | -1pt | Comparison period < 14 days |
+| Cap 6 (ASA) | -1pt | LAT rate > 40% |
+| Cap 8 (MMM) | -2pt | Data < 6 months (simplified estimation used) |
+| Cap 9 (Incrementality) | -1pt | Holdout duration < 4 weeks |
+
+### Ad-Specific Penalties (from Guardrail checks)
+
+| Penalty | Points | Trigger |
+|---------|--------|---------|
+| Attribution uncertainty | -1pt | Last-click used for multi-touch journey |
+| Cross-channel interference | -1pt | Shared audiences without exclusion lists |
+| Learning phase included | -2pt | Campaigns in learning phase not excluded |
+| Platform data lag | -1pt | Comparing different attribution windows without normalization |
+| LAT uncorrected | -1pt | App data without LAT adjustment |
+
+### Aggregation Rule (multiple findings)
+
+When report has multiple findings:
+1. Score each finding independently (12pt base + penalties)
+2. Report-level confidence = **lowest individual finding confidence**
+3. If majority are High but one is Low: report as "Medium — one finding requires additional data"
+
+### Confidence Interval Requirement
+
+For quantitative findings, always report range:
+```
+CPA: $12.50 (95% CI: $10.80–$14.20)
+ROAS: 3.2x (95% CI: 2.8x–3.6x)
+Incremental lift: +15% (95% CI: +8%–+22%)
+```
+
+If confidence interval cannot be computed: state "Point estimate only — confidence interval requires [additional data]."
+
+**Adjusted Total: 10-12pt = High, 7-9pt = Medium, <=6pt = Low**
 
 ---
 
-## Self-Learning SOP System
+## Self-Learning System
+
+### Layer 1: SOP Learning (from user-provided specs)
 
 When user provides new API documentation, platform specifications, or successful playbooks:
 
@@ -619,25 +734,83 @@ When user provides new API documentation, platform specifications, or successful
    **Source**: [URL or user input]
    **Date learned**: YYYY-MM-DD
    **Applies to**: [channel/task]
+   **Trigger keywords**: [list of terms that should activate this SOP]
    **Steps**: [numbered procedure]
    **Constraints**: [rate limits, character limits, etc.]
    ```
 3. Save to `.claude_ad_memory/learned_sops/YYYY-MM-DD_name.md`
-4. On future invocations: scan `learned_sops/` for relevant SOPs before generating recommendations
+
+### Layer 2: SOP Invocation (auto-triggered)
+
+On EVERY invocation, before executing any capability:
+1. Scan `learned_sops/` directory
+2. Match user request against each SOP's `trigger keywords`
+3. If match found: load SOP and incorporate into execution
+4. If multiple matches: load all, note in output "Applied SOPs: [list]"
+
+### Layer 3: Creative Pattern Detection (from vault data)
+
+When `creative_vault.json` has >= 10 creatives with performance data:
+
+1. **Auto-analyze on every creative generation (Capability 3)**:
+   ```
+   BEFORE generating new creatives:
+   - Group vault creatives by [tag, hook_type, usp]
+   - Rank groups by average CTR and CVR
+   - Extract top 3 performing patterns
+   - Generate new creatives biased toward winning patterns
+   - Output: "Pattern insight: [hook_type=question] performs 23% better. Generating 60% question-type hooks."
+   ```
+
+2. **Negative pattern detection**:
+   ```
+   - Identify tags/USPs with consistently low CTR (<50% of average)
+   - Block generation of similar creatives
+   - Output: "⚠ Avoiding [urgency + discount] pattern — 3 past creatives underperformed."
+   ```
+
+### Layer 4: Outcome Feedback Loop
+
+After any recommendation is presented:
+1. Log recommendation in `history_log.jsonl` with `approval_required: true`
+2. On next invocation, check for unresolved recommendations:
+   ```
+   "Last session recommended [action]. Was it implemented? What was the outcome?"
+   ```
+3. If outcome provided:
+   - Compare predicted vs actual impact
+   - Store delta in history_log: `{"predicted_impact": "+15%", "actual_impact": "+8%", "accuracy": 0.53}`
+   - If prediction accuracy < 60% over 5+ recommendations: surface warning
+   ```
+   "⚠ Recent recommendation accuracy: 45%. Suggesting more conservative estimates."
+   ```
+
+### Layer 5: Capability Performance Tracking
+
+Track each capability's recommendation quality:
+
+```
+capability_scores (computed from history_log):
+- Cap 2 (N-gram): 5 invocations, 3 outcomes tracked, avg accuracy 72%
+- Cap 3 (Creative): 8 invocations, 2 with performance data → insufficient
+- Cap 8 (MMM): 1 invocation, no outcome → insufficient
+```
+
+Surface: "Capability [X] has insufficient outcome data. Recommend tracking next [N] recommendations."
 
 ---
 
 ## Delegation Table
 
-| Need | Delegate To | How |
-|------|------------|-----|
-| CSV ingestion + waste detection | `pm-ad-operations` (Cap 2-4) | Delegate, receive findings, synthesize at portfolio level |
-| Single-channel health check | `pm-ad-operations` (Cap 3) | Direct delegation |
-| Deep statistical analysis | `pm-data-analysis` (Cap 4) | For MMM regression, incrementality significance |
-| Creative A/B test design | `cro-methodology` | ICE scoring, test structure |
-| Channel economics (CAC/LTV) | `pm-acquisition-channel-advisor` | Scale/test/kill per channel |
-| Post-click funnel analysis | `funnel-analysis` | What happens after ad click |
-| SaaS unit economics | `pm-saas-economics-efficiency-metrics` | Payback period, LTV:CAC |
+| Need | Delegate To | Expected Input | Expected Output | Fallback |
+|------|------------|---------------|----------------|----------|
+| CSV ingestion + waste detection | `pm-ad-operations` (Cap 2-4) | Platform CSV file path | Waste table (campaign, spend, conv, CPA, action) + Health score table | Built-in simplified CSV analysis |
+| Single-channel health check | `pm-ad-operations` (Cap 3) | Channel name + date range | Health score per campaign (OK/WARN/CRITICAL) | Manual metric computation |
+| Deep statistical analysis | `pm-data-analysis` (Cap 4) | DataFrame + hypothesis + alpha | p-value, effect size, CI, confidence score | Built-in scipy.stats |
+| Creative A/B test design | `cro-methodology` | Hypothesis + variants + primary metric | ICE score, test plan, sample size | Skip, use built-in creative_testing.md |
+| Channel economics (CAC/LTV) | `pm-acquisition-channel-advisor` | Channel name + CAC + LTV + retention | Scale/Test/Kill recommendation | Note: "Install pm-acquisition-channel-advisor for channel economics" |
+| Post-click funnel analysis | `funnel-analysis` | Funnel stages + conversion data | Drop-off table, bottleneck identification | Note: "Install funnel-analysis for post-click analysis" |
+| SaaS unit economics | `pm-saas-economics-efficiency-metrics` | ARPU, CAC, churn rate | LTV:CAC, payback period, Rule of 40 | Manual LTV = ARPU / churn calculation |
 
 ---
 
