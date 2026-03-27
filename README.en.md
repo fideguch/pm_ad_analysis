@@ -7,7 +7,9 @@
 
 [Japanese / 日本語](README.md)
 
-> A Claude Code skill that autonomously executes 5-channel ad strategy, creative generation, data analysis, and optimization — just hand it a CSV. Built on each platform's official guidelines.
+> A Claude Code skill that autonomously executes 5-channel ad strategy, creative generation, data analysis, and optimization — just hand it a CSV. Designed with reference to each platform's public guidelines.
+>
+> Note: This does not imply official certification or compliance by any platform. The skill references publicly available best practices and help documentation.
 
 ---
 
@@ -16,7 +18,7 @@
 | | Manual Ops | Other AI Tools (AdCreative.ai, etc.) | pm-ad-analysis |
 |---|---|---|---|
 | Channel Coverage | One at a time | Meta/Google-centric | **5 channels integrated** |
-| Measurement Setup | Read docs yourself | Out of scope | **Platform-guideline-compliant onboarding** |
+| Measurement Setup | Read docs yourself | Out of scope | **Public-guideline-referenced onboarding** |
 | Budget Allocation | Gut feeling | Average ROAS comparison | **Marginal ROI-based MMM** |
 | Causal Validation | None | None | **Incrementality test design** |
 | Reliability | Tribal knowledge | Black box | **Confidence Scoring (12pt)** |
