@@ -1,0 +1,13 @@
+# Runtime memory (project-specific, not in repo)
+.claude_ad_memory/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
