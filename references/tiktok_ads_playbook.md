@@ -117,3 +117,12 @@ For brand awareness campaigns:
 2. Pair with Spark Ads from participating creators
 3. Track: hashtag views, UGC submissions, follower growth
 4. NOT for direct response (no CPA optimization)
+
+---
+
+### Official References
+
+- [Business Centerをセットアップする](https://ads.tiktok.com/help/article/create-tiktok-business-center) — Business Center作成とビジネス情報・広告アカウント設定
+- [Pixelの設定と確認](https://ads.tiktok.com/help/article/get-started-pixel) — TikTok Pixelの作成からコード設置までの手順
+- [Events APIを始める](https://ads.tiktok.com/help/article/getting-started-events-api) — サーバーサイドイベント送信の設定とテスト確認
+- [Spark Adsについて](https://ads.tiktok.com/help/article/spark-ads) — クリエイター認証コードの取得とSpark Ads設定方法

@@ -142,3 +142,12 @@ Amazon attribution is walled-garden:
 - Cannot compare directly with Google/Meta (different windows, different models)
 - Use Amazon Attribution for off-Amazon traffic → Amazon conversions
 - For portfolio-level MMM: treat Amazon as separate channel with its own response curve
+
+---
+
+### Official References
+
+- [広告アカウント登録](https://advertising.amazon.com/register) — Amazon Adsアカウントの作成と初期設定
+- [Sponsored Productsキャンペーン作成](https://advertising.amazon.com/help/GKLSYGFS2YD33FER) — 商品選択・ターゲティング・入札設定の手順
+- [Sponsored Brandsガイド](https://advertising.amazon.com/library/guides/sponsored-brands-what-to-know) — フォーマット選択・ブランドロゴ・見出し設定の概要
+- [Amazon Attributionガイド](https://advertising.amazon.com/solutions/products/amazon-attribution) — アトリビューションタグ生成と外部広告への実装方法

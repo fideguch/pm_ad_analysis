@@ -84,3 +84,13 @@ When analyzing search query reports:
 | CVR | 2.5-5.0% | 3.0-6.0% | 2.0-4.0% |
 | CPC | $2-5 | $1-3 | $0.5-2 |
 | Quality Score | 7+ | 7+ | 7+ |
+
+---
+
+### Official References
+
+- [キャンペーンを作成する](https://support.google.com/google-ads/answer/6324971) — キャンペーンタイプ選択から広告グループ作成までの手順
+- [スマート自動入札を設定する](https://support.google.com/google-ads/answer/10893605) — tCPA/tROAS等のSmart Bidding戦略の設定方法
+- [ウェブコンバージョンを設定する](https://support.google.com/google-ads/answer/16560108) — コンバージョンアクション作成とタグ設置の手順
+- [P-MAXキャンペーンを作成する](https://support.google.com/google-ads/answer/10724896) — P-MAXのアセットグループ・予算・入札設定
+- [除外キーワードを追加する](https://support.google.com/google-ads/answer/7102995) — ネガティブキーワードの追加と管理方法

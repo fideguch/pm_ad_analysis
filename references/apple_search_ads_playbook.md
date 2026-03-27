@@ -112,3 +112,12 @@ Always report both:
 | No creative production needed | Limited creative control (CPP only) |
 | Simple bidding (CPT max) | No audience targeting beyond keywords |
 | High CVR post-tap | Transparency limited (no query-level data) |
+
+---
+
+### Official References
+
+- [Set Up an Account](https://searchads.apple.com/help/get-started/0004-set-up-an-account) — Apple Adsアカウントの作成と支払い情報の設定
+- [Create Campaigns](https://searchads.apple.com/help/campaigns/0005-create-campaigns) — キャンペーン作成・アプリ選択・予算設定の手順
+- [Add and Manage Keywords](https://searchads.apple.com/help/keywords/0014-add-and-manage-keywords) — キーワード追加・マッチタイプ選択・管理方法
+- [Create Ad Variations](https://searchads.apple.com/help/ads/0077-create-ad-variations) — Custom Product Pageを使った広告バリエーションの作成

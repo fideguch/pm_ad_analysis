@@ -39,6 +39,23 @@
 - Main competitors bidding on our terms: [list]
 - Competitors we bid on: [list]
 
+## Setup Status
+- onboarding_completed: [true/false]
+- platforms_setup: [list of platforms with setup status, e.g., "Google Ads: active, Meta Ads: pending"]
+- tracking_verified: [true/false]
+- first_campaign_launched: [true/false]
+- budget_framework: [70/20/10 | custom | not set]
+
+## Project Auto-Discovery
+- detected_domain: [auto-detected from CLAUDE.md / README.md]
+- detected_platform: [Web / App / Both — auto-detected from package.json / pubspec.yaml / build.gradle]
+- detected_mcps: [list of connected MCP servers from .mcp.json]
+- discovery_confidence: [high / medium / low — based on available project files]
+
+## User Preferences
+- screen_guide_mode: [true/false/unset, default: unset]
+- screen_guide_mode_set_on: [date]
+
 ## Analysis History
 <!-- Auto-appended by pm-ad-analysis skill -->
 <!-- Format: YYYY-MM-DD | [capability] | [channel] | [1-line finding] | Confidence: [H/M/L] -->

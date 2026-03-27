@@ -148,3 +148,13 @@ Always note attribution window when comparing Meta vs Google performance.
 | CVR | 1.0-3.0% | 2.0-5.0% | 1.5-4.0% |
 | CPM | $8-15 | $5-12 | $6-14 |
 | Frequency (7d) | <2.0 | <2.5 | <3.0 |
+
+---
+
+### Official References
+
+- [Business Portfolioを作成する](https://www.facebook.com/business/help/1710077379203657) — ビジネスポートフォリオの作成とビジネス情報設定
+- [Meta Pixelを設定・設置する](https://www.facebook.com/business/help/952192354843755) — Pixel作成からベースコード設置までの手順
+- [Conversions APIについて](https://www.facebook.com/business/help/2041148702652965) — CAPI のGateway・パートナー・直接実装の選択と設定
+- [Advantage+について](https://www.facebook.com/business/help/1362234537597370) — Advantage+ Sales Campaignの作成と最適化
+- [カスタムオーディエンスについて](https://www.facebook.com/business/help/744354708981227) — 顧客リスト・ウェブ・アプリからのカスタムオーディエンス作成
