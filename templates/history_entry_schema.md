@@ -14,7 +14,7 @@ Each line is a single JSON object (append-only, never edit or delete):
   "confidence": "High|Medium|Low|N/A",
   "kpi_impact": "CPA -12% estimated|ROAS +0.3x expected|null",
   "artifacts": ["ads/history/2026-03-27_ngram.md"],
-  "delegated_to": "pm-ad-operations|pm-data-analysis|null",
+  "delegated_to": "pm-data-analysis|cro-methodology|null",
   "creatives_generated": 0,
   "approval_required": false,
   "approved": null

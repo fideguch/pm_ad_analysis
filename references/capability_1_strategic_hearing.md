@@ -20,7 +20,7 @@
 
 ## Context Integration
 
-If `ads/context.md` exists (from pm-ad-operations), import and extend with multi-channel fields. Do not duplicate.
+If `ads/context.md` exists, import and extend with multi-channel fields. Do not duplicate.
 
 ## Output
 

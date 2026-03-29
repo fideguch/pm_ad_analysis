@@ -1,15 +1,18 @@
 ---
 name: pm-ad-analysis
 description: >-
-  GAFA-quality ad analysis orchestrator for PMs. 11 capabilities across 5 channels
+  GAFA-quality ad analysis orchestrator for PMs. 15 capabilities across 5 channels
   (Google Ads, Meta Ads, Apple Search Ads, TikTok Ads, Tracking/Analytics).
   Platform onboarding with GAFA-compliant measurement setup, strategic portfolio
-  optimization, creative generation, N-gram analysis, MMP link generation,
+  optimization, CSV analysis, creative generation, N-gram analysis, MMP link generation,
   Media Mix Modeling, incrementality testing, and self-learning SOPs.
-  Delegates tactical CSV analysis to pm-ad-operations.
 type: interactive
 best_for:
   - "Ad platform onboarding — measurement setup, account structure, first campaign"
+  - "Analyzing Google Ads / Meta Ads CSV exports"
+  - "Detecting ad spend waste"
+  - "Generating campaign health reports"
+  - "Budget reallocation recommendations"
   - "Multi-channel ad portfolio optimization and budget allocation"
   - "Creative headline/description batch generation with performance tracking"
   - "N-gram search query analysis and negative keyword mining"
@@ -22,7 +25,20 @@ best_for:
   - "Creative fatigue detection and systematic replacement"
 triggers:
   - "広告分析"
+  - "広告運用"
   - "広告戦略"
+  - "Google Ads"
+  - "Meta Ads"
+  - "Facebook広告"
+  - "CPA分析"
+  - "ROAS"
+  - "広告費"
+  - "ad performance"
+  - "campaign analysis"
+  - "ad spend"
+  - "広告レポート"
+  - "CPC高い"
+  - "CVR低い"
   - "クリエイティブ生成"
   - "見出し生成"
   - "N-gram"
@@ -65,8 +81,7 @@ triggers:
 
 # PM Ad Analysis
 
-PMのための全自動広告運用エージェント。5チャネルの戦略立案→クリエイティブ生成→分析→改善提案を自律実行。
-戦術レベルのCSV分析は pm-ad-operations に委譲し、本スキルは戦略レイヤーに集中するオーケストレーター。
+PMのための全自動広告運用エージェント。5チャネルの戦略立案→クリエイティブ生成→CSV分析→改善提案を自律実行。
 
 ---
 
@@ -102,6 +117,15 @@ References and capability specs are loaded on-demand. Do NOT pre-load.
 | `references/mmm_incrementality.md` | MMM, marginal ROI, incrementality tests |
 | `references/reproducibility.md` | Environment spec, threshold config, data versioning |
 | `references/official_help_links.md` | Any action that involves ad platform UI operation |
+| `references/csv_operations.md` | CSV ingestion, campaign health check, optimization |
+| `references/ad_metrics.md` | Metric definitions, benchmarks |
+| `references/platform_csv_formats.md` | Platform-specific CSV column mappings |
+
+### CSV Operations Templates
+| Template | Load When |
+|----------|-----------|
+| `templates/ad_context.md` | Creating initial ads/context.md |
+| `templates/ad_report.md` | Generating executive report from CSV analysis |
 
 ### Capability Specs (load the ONE matching user's request)
 | Capability | Reference | Trigger |
@@ -117,6 +141,10 @@ References and capability specs are loaded on-demand. Do NOT pre-load.
 | 8. MMM Portfolio | `references/capability_8_mmm_portfolio.md` | Budget allocation |
 | 9. Incrementality | `references/capability_9_incrementality.md` | Causal questions |
 | 10. Attribution | `references/capability_10_attribution.md` | Attribution model |
+| 11. CSV Ingest + Platform Detection | `references/csv_operations.md` | Google/Meta CSV attached |
+| 12. Campaign Health Check + Waste | `references/csv_operations.md` | Performance review, waste scan |
+| 13. Optimization Recommendations | `references/csv_operations.md` | Budget reallocation, bid strategy |
+| 14. Executive Report | `templates/ad_report.md` | Report generation from CSV |
 
 ---
 
@@ -137,7 +165,7 @@ Check .claude_ad_memory/ exists?
   |    |- No ad account OR no tracking → Load capability_0 (onboarding)
   |    |- Account exists & tracking set → Load capability_1 (strategic hearing)
   |- YES → Route by intent:
-      |- CSV attached           → DELEGATE to pm-ad-operations → synthesize
+      |- CSV attached           → Load references/csv_operations.md → execute internally
       |- Search query CSV       → Load capability_2 (N-gram)
       |- "見出し/creative"       → Load capability_3 (creative gen)
       |- CTR declining          → Load capability_4 (fatigue)
@@ -160,10 +188,10 @@ Check .claude_ad_memory/ exists?
 2. New project (no ad account or tracking unverified) → run Capability 0
 3. Capability 0 complete → auto-transition to Capability 1
 4. No channel context but ad account exists → run Capability 1
-5. CSV attached → delegate to pm-ad-operations, synthesize at portfolio level
+5. CSV attached → load references/csv_operations.md, execute internally
 6. Past history exists → "Last analysis: [X]. Continue or new?"
 7. Creative vault >10 items without performance → prompt CSV upload
-8. Budget question → Capability 8, delegate within-channel to pm-ad-operations
+8. Budget question → Capability 8, load csv_operations.md for within-channel analysis
 9. New API docs provided → trigger SOP learning (Layer 1)
 10. Amazon data → Load amazon_ads_playbook.md, apply ACOS framework
 11. Screen Guide の明示的切替: 「スクリーンガイドON/OFF」「ガイド」「SG」「画面見て」「操作教えて」→ config.md を更新
@@ -181,7 +209,6 @@ UI操作を含む提案（キャンペーン作成、コンバージョン設定
 
 ### Fallback Rules
 
-- **pm-ad-operations missing**: Built-in simplified CSV analysis (compute CPA/ROAS/CTR per campaign, flag zero-conversion waste)
 - **pm-data-analysis missing**: Built-in Python stats (scipy.stats)
 - **Other skills missing**: Skip delegation, note in output
 
@@ -193,7 +220,7 @@ UI操作を含む提案（キャンペーン作成、コンバージョン設定
 
 ---
 
-## Knowledge Store (.claude_ad_memory/)
+## Knowledge Store (.claude_ad_memory/ + ads/)
 
 ```
 .claude_ad_memory/
@@ -202,9 +229,16 @@ UI操作を含む提案（キャンペーン作成、コンバージョン設定
 |- creative_vault.json     <- Generated creatives + performance
 |- channel_context.md      <- Multi-channel strategic context
 +- learned_sops/           <- Self-learned SOPs
-```
 
-Also reads `ads/` (from pm-ad-operations) if it exists.
+ads/
+|- context.md              <- Ad account context (channels, goals, budgets)
+|- benchmarks.md           <- Industry benchmarks + historical performance
+|- history/                <- Past reports
+|   |- index.md            <- Searchable index (auto-maintained)
+|   |- YYYY-MM-DD_type.md  <- Reports with reproduction code
+|   +- ...
++- alerts.md               <- Active alerts (anomalies, budget pacing issues)
+```
 
 ### Schema Definitions
 
@@ -315,7 +349,6 @@ On every invocation, before executing capability:
 
 | Need | Delegate To | Expected Output | Fallback |
 |------|------------|----------------|----------|
-| CSV waste detection | `pm-ad-operations` | Waste table + health scores | Built-in simplified analysis |
 | Deep statistical analysis | `pm-data-analysis` | p-value, effect size, CI | Built-in scipy.stats |
 | Creative A/B test design | `cro-methodology` | ICE score, test plan | Use creative_testing.md |
 | Channel economics | `pm-acquisition-channel-advisor` | Scale/Test/Kill | Note unavailable |

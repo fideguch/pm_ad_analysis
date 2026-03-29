@@ -1,3 +1,6 @@
+# Claude Code (credentials, local settings)
+.claude/
+
 # Runtime memory (project-specific, not in repo)
 .claude_ad_memory/
 

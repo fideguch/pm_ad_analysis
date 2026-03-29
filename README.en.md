@@ -129,7 +129,7 @@ pm-ad-analysis (Strategy Orchestrator)
   |     +-- learned_sops/          (Self-learned SOPs)
   |
   +-- Delegates to:
-        |-- pm-ad-operations         (CSV analysis, waste detection)
+        |-- csv_operations.md        (CSV analysis, waste detection — built-in)
         |-- pm-data-analysis         (Deep statistics, regression)
         |-- cro-methodology          (A/B test design)
         |-- pm-acquisition-channel-advisor (Channel economics)
@@ -206,7 +206,7 @@ requirements_designer --> speckit-bridge --> my_pm_tools
 
 ## When NOT to Use
 
-- Single-channel CSV analysis only -> use `pm-ad-operations` directly
+- Single-channel CSV analysis only -> use this skill's built-in CSV Operations
 - Non-ad data analysis -> use `pm-data-analysis`
 - Landing page optimization -> use `cro-methodology`
 

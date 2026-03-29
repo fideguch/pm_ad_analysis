@@ -1,0 +1,26 @@
+{
+  "name": "pm-ad-analysis",
+  "version": "2.0.0",
+  "description": "GAFA-quality ad analysis skill for PMs — unified with CSV operations, quality infrastructure and regression tests",
+  "type": "module",
+  "scripts": {
+    "test": "npx playwright test",
+    "typecheck": "npx tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "npx prettier --write .",
+    "format:check": "npx prettier --check .",
+    "quality": "npm run lint && npm run typecheck && npm run format:check && npm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^22.15.0",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.34.0"
+  },
+  "private": true
+}

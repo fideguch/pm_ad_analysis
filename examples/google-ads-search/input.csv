@@ -1,0 +1,16 @@
+Campaign,Ad group,Impressions,Clicks,Cost,Conversions,Conv. rate,CPC,CTR,Date
+Brand - Exact,Brand Core,12500,1875,562.50,150,8.00%,0.30,15.00%,2026-03-01
+Brand - Exact,Brand Core,13200,1980,594.00,162,8.18%,0.30,15.00%,2026-03-08
+Brand - Exact,Brand Variants,8400,840,336.00,58,6.90%,0.40,10.00%,2026-03-01
+Brand - Exact,Brand Variants,8900,890,356.00,63,7.08%,0.40,10.00%,2026-03-08
+Performance - Search,Signup Keywords,45000,2250,4500.00,90,4.00%,2.00,5.00%,2026-03-01
+Performance - Search,Signup Keywords,47500,2375,4750.00,85,3.58%,2.00,5.00%,2026-03-08
+Performance - Search,Competitor Terms,32000,960,2880.00,24,2.50%,3.00,3.00%,2026-03-01
+Performance - Search,Competitor Terms,34000,1020,3060.00,18,1.76%,3.00,3.00%,2026-03-08
+Display - Remarketing,Cart Abandoners,180000,1800,900.00,45,2.50%,0.50,1.00%,2026-03-01
+Display - Remarketing,Cart Abandoners,195000,1950,975.00,52,2.67%,0.50,1.00%,2026-03-08
+Display - Remarketing,Homepage Visitors,250000,1250,625.00,12,0.96%,0.50,0.50%,2026-03-01
+Display - Remarketing,Homepage Visitors,260000,1300,650.00,10,0.77%,0.50,0.50%,2026-03-08
+Shopping - Standard,Top Products,65000,3250,3250.00,130,4.00%,1.00,5.00%,2026-03-01
+Shopping - Standard,Top Products,68000,3400,3400.00,142,4.18%,1.00,5.00%,2026-03-08
+Shopping - Standard,Long Tail,42000,840,420.00,8,0.95%,0.50,2.00%,2026-03-08
